@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🇹🇼 대만 타이베이 3박 4일 여행 가이드</title>
+    <!-- SortableJS (드래그 앤 드롭 라이브러리) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <style>
+        :root {
+            --primary: #00807a;
+            --primary-dark: #005c58;
+            --bg: #f4f6f8;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --subtext: #718096;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 24px 20px 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 { font-size: 1.4rem; margin-bottom: 4px; }
+        header p { font-size: 0.85rem; opacity: 0.9; }
+
+        /* Flight Card */
+        .flight-card {
+            background: var(--card-bg);
+            margin: -15px 16px 16px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .flight-info { text-align: center; flex: 1; }
+        .flight-info .code { font-weight: bold; font-size: 1rem; color: var(--primary); }
+        .flight-info .time { font-size: 0.75rem; color: var(--subtext); margin-top: 2px; }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            background: var(--card-bg);
+            margin: 0 16px 16px;
+            padding: 4px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            background: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--subtext);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        /* Content Sections */
+        .content-section { display: none; padding: 0 16px; }
+        .content-section.active { display: block; }
+
+        /* Day Selector */
+        .day-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .day-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .day-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Card list & Items */
+        .schedule-list { min-height: 200px; }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .drag-handle {
+            color: #cbd5e0;
+            font-size: 1.2rem;
+            cursor: grab;
+            padding-right: 4px;
+            user-select: none;
+        }
+
+        .card-content { flex: 1; }
+        .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+        .card-desc { font-size: 0.8rem; color: var(--subtext); line-height: 1.3; }
+
+        .map-btn {
+            background: #e6f4f1;
+            color: var(--primary);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        /* Checklist */
+        .check-item {
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); }
+        .check-item label { font-size: 0.9rem; flex: 1; }
+        .check-item input:checked + label { text-decoration: line-through; color: var(--subtext); }
+
+        /* Info Card */
+        .info-card {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .info-card h3 { font-size: 0.95rem; color: var(--primary-dark); margin-bottom: 6px; }
+        .info-card p { font-size: 0.85rem; line-height: 1.4; color: var(--text); }
+
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            background: #edf2f7;
+            color: var(--subtext);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🇹🇼 대만 타이베이 3박 4일</h1>
+        <p>2026.10.15 (목) - 10.18 (일)</p>
+    </header>
+
+    <div class="flight-card">
+        <div class="flight-info">
+            <div class="code">PUS ➔ TPE</div>
+            <div class="time">10/15 10:00 (ZE989)</div>
+        </div>
+        <div style="color: var(--subtext);">✈️</div>
+        <div class="flight-info">
+            <div class="code">TPE ➔ PUS</div>
+            <div class="time">10/18 12:20 (ZE990)</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('schedule', event)">🗓️ 일정표</button>
+        <button class="tab-btn" onclick="switchTab('checklist', event)">✅ 체크리스트</button>
+        <button class="tab-btn" onclick="switchTab('info', event)">🛂 입국 & 팁</button>
+    </div>
+
+    <!-- 1. 일정표 섹션 -->
+    <div id="schedule" class="content-section active">
+        <div class="day-selector">
+            <button class="day-btn active" onclick="switchDay(1, event)">1일차 (10/15)</button>
+            <button class="day-btn" onclick="switchDay(2, event)">2일차 (10/16)</button>
+            <button class="day-btn" onclick="switchDay(3, event)">3일차 (10/17)</button>
+            <button class="day-btn" onclick="switchDay(4, event)">4일차 (10/18)</button>
+        </div>
+
+        <p style="font-size: 0.75rem; color: var(--subtext); margin-bottom: 10px; text-align: right;">
+            💡 ☰ 아이콘을 드래그해 순서를 변경할 수 있습니다.
+        </p>
+
+        <div id="schedule-container" class="schedule-list"></div>
+
+        <button class="reset-btn" onclick="resetSchedule()">🔄 일정 순서 초기화</button>
+    </div>
+
+    <!-- 2. 체크리스트 섹션 -->
+    <div id="checklist" class="content-section">
+        <h3 style="font-size: 1rem; margin-bottom: 12px;">🎒 여행 준비물</h3>
+        <div class="check-item"><input type="checkbox" id="c1" onchange="saveCheck(1)"><label for="c1">여권 (유효기간 6개월 이상)</label></div>
+        <div class="check-item"><input type="checkbox" id="c2" onchange="saveCheck(2)"><label for="c2">대만 달러(NTD) 환전 및 카드</label></div>
+        <div class="check-item"><input type="checkbox" id="c3" onchange="saveCheck(3)"><label for="c3">E-SIM / 로밍 / 유심 신청</label></div>
+        <div class="check-item"><input type="checkbox" id="c4" onchange="saveCheck(4)"><label for="c4">이지카드 (EasyCard)</label></div>
+        <div class="check-item"><input type="checkbox" id="c5" onchange="saveCheck(5)"><label for="c5">110V 전용 돼지코 플러그</label></div>
+        <div class="check-item"><input type="checkbox" id="c6" onchange="saveCheck(6)"><label for="c6">보조배터리 및 충전선</label></div>
+        <div class="check-item"><input type="checkbox" id="c7" onchange="saveCheck(7)"><label for="c7">접이식 우산 / 우비</label></div>
+        <div class="check-item"><input type="checkbox" id="c8" onchange="saveCheck(8)"><label for="c8">비상약 (소화제, 정장제 등)</label></div>
+    </div>
+
+    <!-- 3. 입국안내 섹션 -->
+    <div id="info" class="content-section">
+        <div class="info-card">
+            <h3>🏨 숙소 정보</h3>
+            <p><strong>스카이19 호텔 (Sky19 Hotel)</strong></p>
+            <p>타이베이 메인역 앞 위치 (공항 MRT 이용 편리)</p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Sky19+Hotel+Taipei" target="_blank" class="map-btn" style="display:inline-block; margin-top:8px;">📍 구글 지도 보기</a>
+        </div>
+        <div class="info-card">
+            <h3>🛂 대만 입국 관련</h3>
+            <p>• 대한민국 여권 90일 무비자 가능</p>
+            <p>• 출국 전 **온라인 입국신고서(NIA Arrival Card)** 작성 추천</p>
+        </div>
+        <div class="info-card">
+            <h3>🎁 대만 여행지원금 (Lucky Land)</h3>
+            <p>• 도착 1~7일 전 사전 웹사이트 신청 필수</p>
+            <p>• 공항 입국장 QR 스캔으로 당첨 확인</p>
+        </div>
+    </div>
+
+    <script>
+        const defaultSchedules = {
+            1: [
+                { id: "1-1", title: "🏨 스카이19 호텔 (짐보관)", desc: "11:20 공항 입국 ➔ 공항 MRT로 메인역 이동", query: "Sky19 Hotel Taipei" },
+                { id: "1-2", title: "🏛️ 중정기념당", desc: "Red Line 2정거장 이동, 교대식 및 정원 관람", query: "Chiang Kai-shek Memorial Hall" },
+                { id: "1-3", title: "🥟 융캉제 (동먼역)", desc: "딘타이펑 신셩점, 세인트피터 커피누가크래커, 소품샵", query: "Yongkang Street Taipei" },
+                { id: "1-4", title: "🛍️ 시먼딩 (야간)", desc: "서문홍루, 무지개 횡단보도, 아종면선 곱창국수, 행복당", query: "Ximending Walking District" }
+            ],
+            2: [
+                { id: "2-1", title: "🗿 예류 지질공원", desc: "희귀 기암괴석 및 여왕머리 바위 관람", query: "Yehliu Geopark" },
+                { id: "2-2", title: "🎈 스펀 라오지에", desc: "기찻길 소원 천등 날리기 & 닭날개 볶음밥 시식", query: "Shifen Old Street" },
+                { id: "2-3", title: "🐱 허우통 고양이 마을", desc: "옛 탄광 마을 감성 고양이 골목길 산책", query: "Houtong Cat Village" },
+                { id: "2-4", title: "🏮 지우펀 라오지에 & 아메이차루", desc: "홍등 야경 탐방 및 아메이차루 포토존", query: "Jiufen Old Street" }
+            ],
+            3: [
+                { id: "3-1", title: "🏛️ 단수이 유적 (소백궁/홍마오청/진리대)", desc: "서양식 건축물 탐방 및 단수이 강변 산책", query: "Fort San Domingo Tamsui" },
+                { id: "3-2", title: "🌅 단수이 라오지에 (일몰)", desc: "강변 노을 감상 및 대왕카스테라, 오징어튀김", query: "Tamsui Old Street" },
+                { id: "3-3", title: "🏙️ 타이베이 101 쇼핑몰 & 전망대", desc: "Red Line 직통 이동, 초고층 야경 및 쇼핑몰 탐방", query: "Taipei 101 Shopping Center" },
+                { id: "3-4", title: "🍡 스린 야시장", desc: "젠탄역 하차, 지파이/왕치즈감자 야식 탐방", query: "Shilin Night Market" }
+            ],
+            4: [
+                { id: "4-1", title: "🏨 체크아웃 & 공항 이동", desc: "타이베이 메인역에서 급행 공항 MRT 탑승", query: "Taipei Main Station" },
+                { id: "4-2", title: "✈️ 타오위안 공항 귀국 (12:20)", desc: "12:20 ZE990 편으로 김해 공항 귀국", query: "Taoyuan International Airport" }
+            ]
+        };
+
+        let currentDay = 1;
+        let schedules = JSON.parse(localStorage.getItem('taipei_schedules')) || defaultSchedules;
+        let sortableInstance = null;
+
+        function switchTab(tabId, e) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            e.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function switchDay(day, e) {
+            currentDay = day;
+            document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            renderSchedule();
+        }
+
+        function renderSchedule() {
+            const container = document.getElementById('schedule-container');
+            container.innerHTML = '';
+            const list = schedules[currentDay] || [];
+
+            list.forEach(item => {
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.query)}`;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.id = item.id;
+                card.innerHTML = `
+                    <div class="drag-handle">☰</div>
+                    <div class="card-content">
+                        <div class="card-title">${item.title}</div>
+                        <div class="card-desc">${item.desc}</div>
+                    </div>
+                    <a href="${mapUrl}" target="_blank" class="map-btn">📍 지도</a>
+                `;
+                container.appendChild(card);
+            });
+
+            if (sortableInstance) sortableInstance.destroy();
+            sortableInstance = new Sortable(container, {
+                handle: '.drag-handle',
+                animation: 150,
+                onEnd: function () {
+                    const updatedList = [];
+                    container.querySelectorAll('.card').forEach(card => {
+                        const id = card.dataset.id;
+                        const originalItem = list.find(i => i.id === id);
+                        if (originalItem) updatedList.push(originalItem);
+                    });
+                    schedules[currentDay] = updatedList;
+                    localStorage.setItem('taipei_schedules', JSON.stringify(schedules));
+                }
+            });
+        }
+
+        function resetSchedule() {
+            if (confirm("일정 순서를 처음 상태로 돌아가시겠습니까?")) {
+                schedules = JSON.parse(JSON.stringify(defaultSchedules));
+                localStorage.setItem('taipei_schedules', JSON.stringify(schedules));
+                renderSchedule();
+            }
+        }
+
+        function saveCheck(id) {
+            localStorage.setItem(`check_${id}`, document.getElementById(`c${id}`).checked);
+        }
+
+        function loadChecklist() {
+            for (let i = 1; i <= 8; i++) {
+                const checked = localStorage.getItem(`check_${i}`) === 'true';
+                const el = document.getElementById(`c${i}`);
+                if (el) el.checked = checked;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderSchedule();
+            loadChecklist();
+        });
+    </script>
+</body>
+</html>
