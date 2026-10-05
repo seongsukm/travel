@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🇹🇼 황보네 대만 타이베이 3박 4일 여행 가이드</title>
+    <title>🇹🇼 황보네 대만 타이베이 3박 4일 여행</title>
     <!-- SortableJS (드래그 앤 드롭) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <style>
@@ -247,69 +247,68 @@
         .info-card h3 { font-size: 0.95rem; color: var(--primary-dark); margin-bottom: 6px; }
         .info-card p { font-size: 0.85rem; line-height: 1.4; color: var(--text); }
 
-        /* Passport Image Upload Styling */
-        .passport-section {
+        /* Passport Multiple Images Styling */
+        .passport-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             margin-top: 10px;
         }
-        .passport-preview-container {
-            width: 100%;
-            margin-top: 8px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px dashed var(--border);
-            background: #fafafa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 120px;
+        .passport-card {
             position: relative;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fafafa;
         }
-        .passport-preview-container img {
+        .passport-card img {
             width: 100%;
             height: auto;
             display: block;
             object-fit: contain;
         }
-        .upload-placeholder {
-            font-size: 0.8rem;
-            color: var(--subtext);
-            text-align: center;
-            padding: 20px;
-        }
-        .file-input {
-            display: none;
-        }
-        .passport-btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .upload-label-btn {
-            flex: 1;
-            text-align: center;
-            background: #e6f4f1;
-            color: var(--primary);
+        .passport-card-actions {
             padding: 8px;
-            border-radius: 8px;
-            font-size: 0.8rem;
+            background: white;
+            border-top: 1px solid var(--border);
+            text-align: right;
+        }
+        .passport-card-del-btn {
+            background: #fff5f5;
+            color: var(--danger);
+            border: 1px solid #feb2b2;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
         }
-        .delete-passport-btn {
-            background: #fff5f5;
-            color: var(--danger);
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
+        .upload-label-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: #e6f4f1;
+            color: var(--primary);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
             cursor: pointer;
+            margin-top: 10px;
+        }
+        .file-input { display: none; }
+        .upload-empty-msg {
+            font-size: 0.8rem;
+            color: var(--subtext);
+            text-align: center;
+            padding: 16px 0;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🇹🇼 황보네 대만 타이베이 3박4일 여행</h1>
+        <h1>🇹🇼 황보네 대만 타이베이 3박 4일 여행</h1>
         <p>2026.10.15 (목) - 10.18 (일)</p>
     </header>
 
@@ -359,23 +358,18 @@
         <div class="check-item"><input type="checkbox" id="c8" onchange="saveCheck(8)"><label for="c8">비상약 (소화제, 정장제 등)</label></div>
     </div>
 
-    <!-- 3. 입국안내 & 여권 저장 섹션 -->
+    <!-- 3. 입국안내 & 여권 다중 저장 섹션 -->
     <div id="info" class="content-section">
-        <!-- 여권 사진 저장 기능 추가 -->
-        <div class="info-card passport-section">
+        <div class="info-card">
             <h3>📷 여권 사본 / 사진 보관함</h3>
-            <p style="font-size:0.75rem; color:var(--subtext);">비상용 여권 사본 이미지를 저장해 두세요.</p>
+            <p style="font-size:0.75rem; color:var(--subtext);">비상용 여권 사본을 여러 장 추가해 둘 수 있습니다.</p>
             
-            <div class="passport-preview-container" id="passportContainer">
-                <div class="upload-placeholder" id="passportPlaceholder">등록된 여권 사진이 없습니다.</div>
-                <img id="passportImg" style="display:none;" alt="여권 사본">
+            <div id="passportGrid" class="passport-grid">
+                <!-- 여권 사진 목록 dynamic 생성 -->
             </div>
 
-            <div class="passport-btn-group">
-                <label for="passportInput" class="upload-label-btn">📸 여권 사진 등록/변경</label>
-                <input type="file" id="passportInput" class="file-input" accept="image/*" onchange="handlePassportUpload(event)">
-                <button class="delete-passport-btn" id="passportDeleteBtn" onclick="deletePassportImage()" style="display:none;">삭제</button>
-            </div>
+            <label for="passportInput" class="upload-label-btn">📸 여권 사진 추가하기</label>
+            <input type="file" id="passportInput" class="file-input" accept="image/*" multiple onchange="handlePassportUpload(event)">
         </div>
 
         <div class="info-card">
@@ -444,6 +438,7 @@
 
         let currentDay = 1;
         let schedules = JSON.parse(localStorage.getItem('taipei_schedules')) || defaultSchedules;
+        let passportImages = JSON.parse(localStorage.getItem('taipei_passport_imgs')) || [];
         let sortableInstance = null;
 
         function saveSchedules() {
@@ -578,61 +573,69 @@
             }
         }
 
-        /* --- 여권 사진 관리 기능 --- */
+        /* --- 여권 사진 다중 관리 기능 --- */
         function handlePassportUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const base64Img = e.target.result;
-                try {
-                    localStorage.setItem('taipei_passport_img', base64Img);
-                    displayPassportImage(base64Img);
-                } catch (err) {
-                    alert('사진 용량이 너무 큽니다. 다른 사진을 선택하거나 용량을 줄여주세요.');
-                }
-            };
-            reader.readAsDataURL(file);
+            let loadedCount = 0;
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64Img = e.target.result;
+                    passportImages.push({
+                        id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                        src: base64Img
+                    });
+                    loadedCount++;
+                    if (loadedCount === files.length) {
+                        try {
+                            localStorage.setItem('taipei_passport_imgs', JSON.stringify(passportImages));
+                            renderPassportImages();
+                        } catch (err) {
+                            alert('저장 공간이 부족합니다. 사진 용량이 작은 파일을 선택해 주세요.');
+                        }
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+            event.target.value = '';
         }
 
-        function displayPassportImage(src) {
-            const imgEl = document.getElementById('passportImg');
-            const placeholder = document.getElementById('passportPlaceholder');
-            const deleteBtn = document.getElementById('passportDeleteBtn');
+        function renderPassportImages() {
+            const grid = document.getElementById('passportGrid');
+            grid.innerHTML = '';
 
-            imgEl.src = src;
-            imgEl.style.display = 'block';
-            placeholder.style.display = 'none';
-            deleteBtn.style.display = 'block';
-        }
-
-        function deletePassportImage() {
-            if (confirm('저장된 여권 사진을 삭제하시겠습니까?')) {
-                localStorage.removeItem('taipei_passport_img');
-                const imgEl = document.getElementById('passportImg');
-                const placeholder = document.getElementById('passportPlaceholder');
-                const deleteBtn = document.getElementById('passportDeleteBtn');
-
-                imgEl.src = '';
-                imgEl.style.display = 'none';
-                placeholder.style.display = 'block';
-                deleteBtn.style.display = 'none';
-                document.getElementById('passportInput').value = '';
+            if (passportImages.length === 0) {
+                grid.innerHTML = '<div class="upload-empty-msg">등록된 여권 사진이 없습니다.</div>';
+                return;
             }
+
+            passportImages.forEach((imgObj, idx) => {
+                const card = document.createElement('div');
+                card.className = 'passport-card';
+                card.innerHTML = `
+                    <img src="${imgObj.src}" alt="여권 사본 ${idx + 1}">
+                    <div class="passport-card-actions">
+                        <button class="passport-card-del-btn" onclick="deletePassportImage('${imgObj.id}')">삭제</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         }
 
-        function loadPassportImage() {
-            const savedImg = localStorage.getItem('taipei_passport_img');
-            if (savedImg) {
-                displayPassportImage(savedImg);
+        function deletePassportImage(id) {
+            if (confirm('이 여권 사진을 삭제하시겠습니까?')) {
+                passportImages = passportImages.filter(img => img.id !== id);
+                localStorage.setItem('taipei_passport_imgs', JSON.stringify(passportImages));
+                renderPassportImages();
             }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             renderSchedule();
             loadChecklist();
-            loadPassportImage();
+            renderPassportImages();
         });
     </script>
 </body>
